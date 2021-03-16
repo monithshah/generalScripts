@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+commit_message = ARGV[0] || 'm'
+
+git_add_command = 'git add .'
+git_commit_command = "git commit -m #{commit_message}"
+
+puts
+puts "Executing Command : #{git_add_command}"
+system git_add_command
+puts
+puts "Executing Command : #{git_commit_command}"
+system git_commit_command
+puts

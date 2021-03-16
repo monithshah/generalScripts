@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+
+error = nil
+error = 'Enter path to Folder Containing Example files' if ARGV.empty?
+error = 'Given Path is not an directory' if error.nil? && !File.directory?(ARGV[0])
+
+unless error.nil?
+  puts error
+  abort
+end
+
+ignore_existing_files = ARGV[1] == 'y'
+
+files_to_ignore = ARGV[2..ARGV.size] || []
+
+base_examples_file_path = ARGV[0]
+
+example_file_patterns = [
+  '*.example',
+  '*.example.*'
+]
+
+example_files = []
+
+example_file_patterns.each do |example_file_pattern|
+  example_files += Dir.glob(example_file_pattern)
+end
+
+if example_files.empty?
+  puts 'No Example Fils Found'
+  abort
+end
+
+example_files.each do |file|
+  file_name_of_copy = File.basename(file).split('.')
+  file_name_of_copy.delete 'example'
+  file_name_of_copy = file_name_of_copy.join('.')
+  path_of_copy = File.join(base_examples_file_path, file_name_of_copy)
+  if (ignore_existing_files && File.exist?(path_of_copy)) || files_to_ignore.include?(file_name_of_copy)
+    puts "Skipping #{file_name_of_copy}. Already Exists or asked to skip"
+    next
+  end
+  puts "Cloning #{file} to #{file_name_of_copy}"
+  example_file_content = File.read(file)
+  File.open(path_of_copy, 'w') { |copy_file| copy_file << example_file_content }
+end
+
+puts 'All Examples have been cloned!'

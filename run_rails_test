@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+require_relative 'rails_test_runner'
+
+test_runner = RailsTestRunner.new('rails')
+test_runner.run_test
